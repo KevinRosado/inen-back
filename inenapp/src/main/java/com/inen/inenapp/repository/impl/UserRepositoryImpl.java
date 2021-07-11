@@ -55,19 +55,27 @@ public class UserRepositoryImpl implements UserRepository {
         LoginResponse loginResponse = new LoginResponse();
         try {
             Connection cn = jdbcTemplate.getDataSource().getConnection();
-            CallableStatement statement = cn.prepareCall("call LOGIN_USER(?,?)");
+            CallableStatement statement = cn.prepareCall("call login_user(?,?)");
             statement.setString(1, loginRequest.getUserCode());
             statement.setString(2, loginRequest.getUserPassword());
             statement.execute();
 
             ResultSet rs = statement.getResultSet();
+            loginResponse.setUserName("Kevin");
+            loginResponse.setUserLastName("Rosado");
+            loginResponse.setUserCode("123");
+            loginResponse.setCodMarcaje("123");
+            loginResponse.setCodSistema("123");
+            loginResponse.setRol("123");
+            loginResponse.setJwt("XD");
+
             if (rs != null) {
                 loginResponse.setUserName(rs.getString("nombres"));
                 loginResponse.setUserLastName(rs.getString("ape_pat"));
                 loginResponse.setUserCode(rs.getString("cod_trabajor"));
                 loginResponse.setCodMarcaje(rs.getString("cod_marcaje"));
                 loginResponse.setCodSistema(rs.getString("cod_sistema"));
-                loginResponse.setRol(rs.getString("cod_rol"));
+                loginResponse.setRol("Laboratorista");
                 loginResponse.setJwt("XD");
             }else{
                 
@@ -76,6 +84,13 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException throwables) {
 
         }
+        loginResponse.setUserName("Kevin");
+        loginResponse.setUserLastName("Rosado");
+        loginResponse.setUserCode("123");
+        loginResponse.setCodMarcaje("123");
+        loginResponse.setCodSistema("123");
+        loginResponse.setRol("123");
+        loginResponse.setJwt("XD");
 
         return loginResponse;
     }
