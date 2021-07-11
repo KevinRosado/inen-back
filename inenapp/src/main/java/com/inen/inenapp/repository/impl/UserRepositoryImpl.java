@@ -5,9 +5,12 @@ import com.inen.inenapp.dto.login.LoginResponse;
 import com.inen.inenapp.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 
 import java.net.ConnectException;
 import java.sql.CallableStatement;
@@ -16,8 +19,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -49,50 +54,36 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public LoginResponse loginUser(LoginRequest loginRequest) {
 
-        List<SqlParameter> parameters = new ArrayList<>();
-        parameters.add(new SqlParameter("", Types.VARCHAR));
-        parameters.add(new SqlParameter("", Types.VARCHAR));
-        LoginResponse loginResponse = new LoginResponse();
-        try {
-            Connection cn = jdbcTemplate.getDataSource().getConnection();
-            CallableStatement statement = cn.prepareCall("call login_user(?,?)");
-            statement.setString(1, loginRequest.getUserCode());
-            statement.setString(2, loginRequest.getUserPassword());
-            statement.execute();
+        List<SqlParameter> parameters = Arrays.asList(
+            new SqlParameter("usercode", Types.VARCHAR),
+            new SqlParameter("userpassword", Types.VARCHAR),
+            new SqlOutParameter("p_cursor", Types.REF_CURSOR));
 
-            ResultSet rs = statement.getResultSet();
-            loginResponse.setUserName("Kevin");
-            loginResponse.setUserLastName("Rosado");
-            loginResponse.setUserCode("123");
-            loginResponse.setCodMarcaje("123");
-            loginResponse.setCodSistema("123");
-            loginResponse.setRol("123");
-            loginResponse.setJwt("XD");
-
-            if (rs != null) {
-                loginResponse.setUserName(rs.getString("nombres"));
-                loginResponse.setUserLastName(rs.getString("ape_pat"));
-                loginResponse.setUserCode(rs.getString("cod_trabajor"));
-                loginResponse.setCodMarcaje(rs.getString("cod_marcaje"));
-                loginResponse.setCodSistema(rs.getString("cod_sistema"));
-                loginResponse.setRol("Laboratorista");
-                loginResponse.setJwt("XD");
-            }else{
-                
-            }
-
-        } catch (SQLException throwables) {
-
+    Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+        @Override
+        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+            con.setAutoCommit(false);
+            CallableStatement callableStatement = con.prepareCall("{call INEN.login_user(?,?,?)}");
+            callableStatement.setString(1, loginRequest.getUserCode());
+            callableStatement.setString(2, loginRequest.getUserPassword());
+            callableStatement.registerOutParameter(3, Types.REF_CURSOR);
+            return callableStatement;
         }
-        loginResponse.setUserName("Kevin");
-        loginResponse.setUserLastName("Rosado");
-        loginResponse.setUserCode("123");
-        loginResponse.setCodMarcaje("123");
-        loginResponse.setCodSistema("123");
-        loginResponse.setRol("123");
-        loginResponse.setJwt("XD");
+    }, parameters);
+    List<LoginResponse> response = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
+            .map(p -> {
+                LoginResponse user = new LoginResponse();
+                user.setUserCode((String)p.get("cod_trabajador"));
+                user.setUserLastName((String)p.get("ape_pat"));
+                user.setUserName((String)p.get("nombres"));
+                user.setCodMarcaje((String)p.get("cod_marcaje"));
+                user.setCodSistema((String)p.get("cod_sistema"));
+                user.setRol("Laboratorista");
+                user.setJwt("jwt");
+                return user;
+            }).collect(Collectors.toList());
 
-        return loginResponse;
+    return response.get(0);
     }
 
 }
