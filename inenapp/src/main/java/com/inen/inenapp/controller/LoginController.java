@@ -3,8 +3,6 @@ package com.inen.inenapp.controller;
 import com.inen.inenapp.dto.login.LoginRequest;
 import com.inen.inenapp.dto.login.LoginResponse;
 import com.inen.inenapp.service.UserService;
-
-import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
