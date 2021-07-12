@@ -6,4 +6,5 @@ import lombok.Data;
 public class Attention {
     private String codRegistro;
     private String horaRegistro;
+    private String descripcion;  
 }

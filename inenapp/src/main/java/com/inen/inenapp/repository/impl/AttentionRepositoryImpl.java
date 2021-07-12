@@ -129,6 +129,7 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                     Attention a = new Attention();
                     a.setCodRegistro(String.valueOf(p.get("cod_registro")));
                     a.setHoraRegistro(String.valueOf(p.get("hora_registro")));
+                    a.setDescripcion(String.valueOf(p.get("descripcion")));
                     return a;
                 }).collect(Collectors.toList());
         return attentions;
