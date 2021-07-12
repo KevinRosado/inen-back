@@ -135,7 +135,8 @@ public class AttentionRepositoryImpl implements AttentionRepository {
     }
 
     @Override
-    public void addNewAttention(MedicalAttention medicalAttention) {
+    public AttentionResponse addNewAttention(MedicalAttention medicalAttention) {
+        AttentionResponse a = new AttentionResponse();
         List<SqlParameter> parameters = Arrays.asList(
                 new SqlParameter("description", Types.VARCHAR),
                 new SqlParameter("details", Types.VARCHAR),
@@ -164,5 +165,7 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                 return callableStatement;
             }
         }, parameters);
+        a.setRegistered(true);
+        return a;
     }
 }
