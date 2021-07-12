@@ -26,8 +26,9 @@ public class AttentionController {
     }
 
     @PostMapping(value = "/neworder", consumes = "application/json")
-    public Integer addNewOrder(@RequestBody Order order){
-        return attentionService.addNewOrder(order);
+    @ResponseStatus(HttpStatus.OK)
+    public void addNewOrder(@RequestBody Order order){
+        attentionService.addNewOrder(order);
     }
 
     @GetMapping(value ="/latest", produces = "application/json")

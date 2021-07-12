@@ -88,25 +88,20 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                 new SqlParameter("attentionCode", Types.INTEGER),
                 new SqlParameter("workerCode", Types.VARCHAR),
                 new SqlParameter("personCode", Types.VARCHAR),
-                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+                new SqlOutParameter("orderCode", Types.INTEGER));
         Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
             @Override
             public CallableStatement createCallableStatement(Connection con) throws SQLException {
-                con.setAutoCommit(false);
                 CallableStatement callableStatement = con.prepareCall("{call INEN.create_order(?,?,?,?)}");
-                callableStatement.setString(1, order.getCodRegistro());
+                callableStatement.setInt(1, Integer.parseInt(order.getCodRegistro()));
                 callableStatement.setString(2, order.getCodTrabajador());
                 callableStatement.setString(3, order.getCodPersona());
-                callableStatement.registerOutParameter(4, Types.REF_CURSOR);
+                callableStatement.registerOutParameter(4, Types.INTEGER);
                 return callableStatement;
             }
         }, parameters);
-        List<Integer> code = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
-                .map(p -> {
-                    int i = (int) p.get("cod_orden");
-                    return i;
-                }).collect(Collectors.toList());
-        return code.get(0);
+        Integer code = (Integer) t.get("orderCode");
+        return code;
     }
 
     @Override
@@ -160,6 +155,26 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                 callableStatement.setString(7, medicalAttention.getClinicalCode());
                 callableStatement.setString(8, medicalAttention.getAreaCode());
                 callableStatement.registerOutParameter(9, Types.BOOLEAN);
+                return callableStatement;
+            }
+        }, parameters);
+    }
+
+    @Override
+    public void addNewService(Integer orderCode, String serviceCode, String priceType, BigDecimal price) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("orderCode", Types.VARCHAR),
+                new SqlParameter("serviceCode", Types.VARCHAR),
+                new SqlParameter("priceType", Types.VARCHAR),
+                new SqlParameter("price", Types.NUMERIC));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                CallableStatement callableStatement = con.prepareCall("{call INEN.add_service(?,?,?,?)}");
+                callableStatement.setInt(1, orderCode);
+                callableStatement.setString(2, serviceCode);
+                callableStatement.setString(3, priceType);
+                callableStatement.setBigDecimal(4, price);
                 return callableStatement;
             }
         }, parameters);
