@@ -159,7 +159,7 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                 callableStatement.setString(6, medicalAttention.getMedicalCode());
                 callableStatement.setString(7, medicalAttention.getClinicalCode());
                 callableStatement.setString(8, medicalAttention.getAreaCode());
-                callableStatement.registerOutParameter(9, Types.REF_CURSOR);
+                callableStatement.registerOutParameter(9, Types.OTHER);
                 con.commit();
                 return callableStatement;
             }
