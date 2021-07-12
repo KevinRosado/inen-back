@@ -33,4 +33,9 @@ public class AttentionServiceImpl implements AttentionService {
     public List<Attention> getLastAttentions(String clinicalCode) {
         return attentionRepository.getLastAttentions(clinicalCode);
     }
+
+    @Override
+    public void addNewAttention(MedicalAttention medicalAttention) {
+        attentionRepository.addNewAttention(medicalAttention);
+    }
 }

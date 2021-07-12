@@ -1,11 +1,9 @@
 package com.inen.inenapp.controller;
 
-import com.inen.inenapp.dto.attention.Attention;
-import com.inen.inenapp.dto.attention.Order;
-import com.inen.inenapp.dto.attention.Patient;
-import com.inen.inenapp.dto.attention.Service;
+import com.inen.inenapp.dto.attention.*;
 import com.inen.inenapp.service.AttentionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,5 +33,11 @@ public class AttentionController {
     @GetMapping(value ="/latest", produces = "application/json")
     public List<Attention> getLastAttentions(@RequestParam String clinicalCode){
         return attentionService.getLastAttentions(clinicalCode);
+    }
+
+    @PostMapping(value = "/newattention", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void addNewAttention(@RequestBody MedicalAttention medicalAttention){
+        attentionService.addNewAttention(medicalAttention);
     }
 }

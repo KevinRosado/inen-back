@@ -1,9 +1,6 @@
 package com.inen.inenapp.repository.impl;
 
-import com.inen.inenapp.dto.attention.Attention;
-import com.inen.inenapp.dto.attention.Order;
-import com.inen.inenapp.dto.attention.Patient;
-import com.inen.inenapp.dto.attention.Service;
+import com.inen.inenapp.dto.attention.*;
 import com.inen.inenapp.repository.AttentionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -115,7 +112,7 @@ public class AttentionRepositoryImpl implements AttentionRepository {
     @Override
     public List<Attention> getLastAttentions(String clinicalCode) {
         List<SqlParameter> parameters = Arrays.asList(
-                new SqlParameter("clinicalCode", Types.INTEGER),
+                new SqlParameter("clinicalCode", Types.VARCHAR),
                 new SqlOutParameter("p_cursor", Types.REF_CURSOR));
         Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
             @Override
@@ -135,5 +132,37 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                     return a;
                 }).collect(Collectors.toList());
         return attentions;
+    }
+
+    @Override
+    public void addNewAttention(MedicalAttention medicalAttention) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("description", Types.VARCHAR),
+                new SqlParameter("details", Types.VARCHAR),
+                new SqlParameter("patientType", Types.VARCHAR),
+                new SqlParameter("workerCode", Types.VARCHAR),
+                new SqlParameter("personCode", Types.VARCHAR),
+                new SqlParameter("medicalCode", Types.VARCHAR),
+                new SqlParameter("clinicalCode", Types.VARCHAR),
+                new SqlParameter("areaCode", Types.VARCHAR),
+                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.create_attention(?,?,?,?,?,?,?,?,?)}");
+                callableStatement.setString(1, medicalAttention.getDescription());
+                callableStatement.setString(2, medicalAttention.getDetails());
+                callableStatement.setString(3, medicalAttention.getPatientType());
+                callableStatement.setString(4, medicalAttention.getWorkerCode());
+                callableStatement.setString(5, medicalAttention.getPersonCode());
+                callableStatement.setString(6, medicalAttention.getMedicalCode());
+                callableStatement.setString(7, medicalAttention.getClinicalCode());
+                callableStatement.setString(8, medicalAttention.getAreaCode());
+                callableStatement.registerOutParameter(9, Types.REF_CURSOR);
+                con.commit();
+                return callableStatement;
+            }
+        }, parameters);
     }
 }

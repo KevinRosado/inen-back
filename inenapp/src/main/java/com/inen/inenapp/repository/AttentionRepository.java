@@ -1,9 +1,7 @@
 package com.inen.inenapp.repository;
 
-import com.inen.inenapp.dto.attention.Attention;
-import com.inen.inenapp.dto.attention.Order;
-import com.inen.inenapp.dto.attention.Patient;
-import com.inen.inenapp.dto.attention.Service;
+import com.inen.inenapp.dto.attention.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -12,4 +10,5 @@ public interface AttentionRepository {
     List<Service> getByPriceCode(String priceCode);
     Integer addNewOrder(Order order);
     List<Attention> getLastAttentions(String clinicalCode);
+    void addNewAttention(MedicalAttention medicalAttention);
 }
