@@ -12,10 +12,8 @@ import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
-import java.net.ConnectException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -73,6 +71,7 @@ public class UserRepositoryImpl implements UserRepository {
     List<LoginResponse> response = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
             .map(p -> {
                 LoginResponse user = new LoginResponse();
+                user.setCodPersona((String) p.get("cod_persona"));
                 user.setUserCode((String)p.get("cod_trabajador"));
                 user.setUserLastName((String)p.get("ape_pat"));
                 user.setUserName((String)p.get("nombres"));
