@@ -138,15 +138,15 @@ public class AttentionRepositoryImpl implements AttentionRepository {
     public AttentionResponse addNewAttention(MedicalAttention medicalAttention) {
         AttentionResponse a = new AttentionResponse();
         List<SqlParameter> parameters = Arrays.asList(
-                new SqlParameter("description", Types.VARCHAR),
-                new SqlParameter("details", Types.VARCHAR),
-                new SqlParameter("patientType", Types.VARCHAR),
-                new SqlParameter("workerCode", Types.VARCHAR),
-                new SqlParameter("personCode", Types.VARCHAR),
-                new SqlParameter("medicalCode", Types.VARCHAR),
-                new SqlParameter("clinicalCode", Types.VARCHAR),
-                new SqlParameter("areaCode", Types.VARCHAR),
-                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+                new SqlParameter("p_description", Types.VARCHAR),
+                new SqlParameter("p_details", Types.VARCHAR),
+                new SqlParameter("p_patientType", Types.VARCHAR),
+                new SqlParameter("p_workerCode", Types.VARCHAR),
+                new SqlParameter("p_personCode", Types.VARCHAR),
+                new SqlParameter("p_medicalCode", Types.VARCHAR),
+                new SqlParameter("p_clinicalCode", Types.VARCHAR),
+                new SqlParameter("p_areaCode", Types.VARCHAR),
+                new SqlOutParameter("p_cursor", Types.BOOLEAN));
         Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
             @Override
             public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -160,7 +160,7 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                 callableStatement.setString(6, medicalAttention.getMedicalCode());
                 callableStatement.setString(7, medicalAttention.getClinicalCode());
                 callableStatement.setString(8, medicalAttention.getAreaCode());
-                callableStatement.registerOutParameter(9, Types.OTHER);
+                callableStatement.registerOutParameter(9, Types.BOOLEAN);
                 con.commit();
                 return callableStatement;
             }
