@@ -37,7 +37,7 @@ public class AttentionController {
 
     @PostMapping(value = "/newattention", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public AttentionResponse addNewAttention(@RequestBody MedicalAttention medicalAttention){
-        return attentionService.addNewAttention(medicalAttention);
+    public void addNewAttention(@RequestBody MedicalAttention medicalAttention){
+        attentionService.addNewAttention(medicalAttention);
     }
 }

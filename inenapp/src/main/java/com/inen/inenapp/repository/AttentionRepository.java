@@ -10,5 +10,5 @@ public interface AttentionRepository {
     List<Service> getByPriceCode(String priceCode);
     Integer addNewOrder(Order order);
     List<Attention> getLastAttentions(String clinicalCode);
-    AttentionResponse addNewAttention(MedicalAttention medicalAttention);
+    void addNewAttention(MedicalAttention medicalAttention);
 }

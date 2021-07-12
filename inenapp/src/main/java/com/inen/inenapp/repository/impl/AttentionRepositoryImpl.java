@@ -135,8 +135,7 @@ public class AttentionRepositoryImpl implements AttentionRepository {
     }
 
     @Override
-    public AttentionResponse addNewAttention(MedicalAttention medicalAttention) {
-        AttentionResponse a = new AttentionResponse();
+    public void addNewAttention(MedicalAttention medicalAttention) {
         List<SqlParameter> parameters = Arrays.asList(
                 new SqlParameter("p_description", Types.VARCHAR),
                 new SqlParameter("p_details", Types.VARCHAR),
@@ -150,7 +149,6 @@ public class AttentionRepositoryImpl implements AttentionRepository {
         Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
             @Override
             public CallableStatement createCallableStatement(Connection con) throws SQLException {
-                con.setAutoCommit(false);
                 CallableStatement callableStatement = con.prepareCall("{call INEN.create_attention(?,?,?,?,?,?,?,?,?)}");
                 callableStatement.setString(1, medicalAttention.getDescription());
                 callableStatement.setString(2, medicalAttention.getDetails());
@@ -161,11 +159,8 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                 callableStatement.setString(7, medicalAttention.getClinicalCode());
                 callableStatement.setString(8, medicalAttention.getAreaCode());
                 callableStatement.registerOutParameter(9, Types.BOOLEAN);
-                con.commit();
                 return callableStatement;
             }
         }, parameters);
-        a.setRegistered(true);
-        return a;
     }
 }

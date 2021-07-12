@@ -35,7 +35,7 @@ public class AttentionServiceImpl implements AttentionService {
     }
 
     @Override
-    public AttentionResponse addNewAttention(MedicalAttention medicalAttention) {
-        return attentionRepository.addNewAttention(medicalAttention);
+    public void addNewAttention(MedicalAttention medicalAttention) {
+        attentionRepository.addNewAttention(medicalAttention);
     }
 }
