@@ -127,8 +127,8 @@ public class AttentionRepositoryImpl implements AttentionRepository {
         List<Attention> attentions = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
                 .map(p -> {
                     Attention a = new Attention();
-                    a.setAttentionCode(String.valueOf(p.get("cod_registro")));
-                    a.setAttentionHour(String.valueOf(p.get("hora_registro")));
+                    a.setCodRegistro(String.valueOf(p.get("cod_registro")));
+                    a.setHoraRegistro(String.valueOf(p.get("hora_registro")));
                     return a;
                 }).collect(Collectors.toList());
         return attentions;
