@@ -28,4 +28,9 @@ public class AttentionServiceImpl implements AttentionService {
     public Integer addNewOrder(Order order) {
         return attentionRepository.addNewOrder(order);
     }
+
+    @Override
+    public List<Attention> getLastAttentions(String clinicalCode) {
+        return attentionRepository.getLastAttentions(clinicalCode);
+    }
 }

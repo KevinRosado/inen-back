@@ -1,5 +1,6 @@
 package com.inen.inenapp.repository.impl;
 
+import com.inen.inenapp.dto.attention.Attention;
 import com.inen.inenapp.dto.attention.Order;
 import com.inen.inenapp.dto.attention.Patient;
 import com.inen.inenapp.dto.attention.Service;
@@ -96,9 +97,9 @@ public class AttentionRepositoryImpl implements AttentionRepository {
             public CallableStatement createCallableStatement(Connection con) throws SQLException {
                 con.setAutoCommit(false);
                 CallableStatement callableStatement = con.prepareCall("{call INEN.create_order(?,?,?,?)}");
-                callableStatement.setInt(1, order.getAttentionCode());
-                callableStatement.setString(2, order.getWorkerCode());
-                callableStatement.setString(3, order.getPersonCode());
+                callableStatement.setString(1, order.getCodRegistro());
+                callableStatement.setString(2, order.getCodTrabajador());
+                callableStatement.setString(3, order.getCodPersona());
                 callableStatement.registerOutParameter(4, Types.REF_CURSOR);
                 return callableStatement;
             }
@@ -109,5 +110,30 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                     return i;
                 }).collect(Collectors.toList());
         return code.get(0);
+    }
+
+    @Override
+    public List<Attention> getLastAttentions(String clinicalCode) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("clinicalCode", Types.INTEGER),
+                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.last_attentions(?,?)}");
+                callableStatement.setString(1, clinicalCode);
+                callableStatement.registerOutParameter(2, Types.REF_CURSOR);
+                return callableStatement;
+            }
+        }, parameters);
+        List<Attention> attentions = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
+                .map(p -> {
+                    Attention a = new Attention();
+                    a.setAttentionCode(String.valueOf(p.get("cod_registro")));
+                    a.setAttentionHour(String.valueOf(p.get("hora_registro")));
+                    return a;
+                }).collect(Collectors.toList());
+        return attentions;
     }
 }

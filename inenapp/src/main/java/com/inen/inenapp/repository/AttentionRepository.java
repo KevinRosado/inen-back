@@ -1,5 +1,6 @@
 package com.inen.inenapp.repository;
 
+import com.inen.inenapp.dto.attention.Attention;
 import com.inen.inenapp.dto.attention.Order;
 import com.inen.inenapp.dto.attention.Patient;
 import com.inen.inenapp.dto.attention.Service;
@@ -10,4 +11,5 @@ public interface AttentionRepository {
     Patient getPatientDetails(String patientCode);
     List<Service> getByPriceCode(String priceCode);
     Integer addNewOrder(Order order);
+    List<Attention> getLastAttentions(String clinicalCode);
 }

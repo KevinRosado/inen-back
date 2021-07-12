@@ -1,5 +1,6 @@
 package com.inen.inenapp.controller;
 
+import com.inen.inenapp.dto.attention.Attention;
 import com.inen.inenapp.dto.attention.Order;
 import com.inen.inenapp.dto.attention.Patient;
 import com.inen.inenapp.dto.attention.Service;
@@ -29,5 +30,10 @@ public class AttentionController {
     @PostMapping(value = "/neworder", consumes = "application/json")
     public Integer addNewOrder(@RequestBody Order order){
         return attentionService.addNewOrder(order);
+    }
+
+    @GetMapping(value ="/latest", produces = "application/json")
+    public List<Attention> getLastAttentions(@RequestParam String clinicalCode){
+        return attentionService.getLastAttentions(clinicalCode);
     }
 }

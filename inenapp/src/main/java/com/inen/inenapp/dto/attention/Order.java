@@ -2,9 +2,12 @@ package com.inen.inenapp.dto.attention;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Order {
-    private Integer attentionCode;
-    private String workerCode;
-    private String personCode;
+    private String codRegistro;
+    private String codTrabajador;
+    private String codPersona;
+    private List<Service> services;
 }
