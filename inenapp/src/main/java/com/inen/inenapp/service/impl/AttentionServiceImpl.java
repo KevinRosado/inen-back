@@ -23,4 +23,9 @@ public class AttentionServiceImpl implements AttentionService {
     public List<com.inen.inenapp.dto.attention.Service> getByPriceCode(String priceCode) {
         return attentionRepository.getByPriceCode(priceCode);
     }
+
+    @Override
+    public Integer addNewOrder(Order order) {
+        return attentionRepository.addNewOrder(order);
+    }
 }

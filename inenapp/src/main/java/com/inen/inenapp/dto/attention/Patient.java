@@ -8,6 +8,7 @@ public class Patient {
     private String paternal_surname;
     private String maternal_surname;
     private String patient_name;
-    private String health_code;
+    private String insurance_code;
+    private String insurance_name;
     private String blood_type;
 }

@@ -1,5 +1,6 @@
 package com.inen.inenapp.repository.impl;
 
+import com.inen.inenapp.dto.attention.Order;
 import com.inen.inenapp.dto.attention.Patient;
 import com.inen.inenapp.dto.attention.Service;
 import com.inen.inenapp.repository.AttentionRepository;
@@ -50,7 +51,8 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                     pt.setMaternal_surname((String)p.get("ape_mat"));
                     pt.setPaternal_surname((String)p.get("ape_pat"));
                     pt.setPatient_name((String)p.get("nombres"));
-                    pt.setHealth_code((String) p.get("seguro"));
+                    pt.setInsurance_code((String) p.get("cod_tipo_seguro"));
+                    pt.setInsurance_name((String) p.get("seguro"));
                     return pt;
                 }).collect(Collectors.toList());
         return patients.get(0);
@@ -80,5 +82,32 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                     return s;
                 }).collect(Collectors.toList());
         return services;
+    }
+
+    @Override
+    public Integer addNewOrder(Order order) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("attentionCode", Types.INTEGER),
+                new SqlParameter("workerCode", Types.VARCHAR),
+                new SqlParameter("personCode", Types.VARCHAR),
+                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.create_order(?,?,?,?)}");
+                callableStatement.setInt(1, order.getAttentionCode());
+                callableStatement.setString(2, order.getWorkerCode());
+                callableStatement.setString(3, order.getPersonCode());
+                callableStatement.registerOutParameter(4, Types.REF_CURSOR);
+                return callableStatement;
+            }
+        }, parameters);
+        List<Integer> code = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
+                .map(p -> {
+                    int i = (int) p.get("cod_orden");
+                    return i;
+                }).collect(Collectors.toList());
+        return code.get(0);
     }
 }
