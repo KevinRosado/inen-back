@@ -212,7 +212,6 @@ public class AttentionRepositoryImpl implements AttentionRepository {
     @Override
     public void addNewHistory(ClinicalHistory clinicalHistory) {
         List<SqlParameter> parameters = Arrays.asList(
-                new SqlParameter("clinicalCode", Types.VARCHAR),
                 new SqlParameter("insuranceCode", Types.VARCHAR),
                 new SqlParameter("phoneNumber", Types.VARCHAR),
                 new SqlParameter("email", Types.VARCHAR),
@@ -221,13 +220,12 @@ public class AttentionRepositoryImpl implements AttentionRepository {
         Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
             @Override
             public CallableStatement createCallableStatement(Connection con) throws SQLException {
-                CallableStatement callableStatement = con.prepareCall("{call INEN.add_clinic_historial(?,?,?,?,?,?)}");
-                callableStatement.setString(1, clinicalHistory.getClinicalCode());
-                callableStatement.setString(2, clinicalHistory.getInsuranceCode());
-                callableStatement.setString(3, clinicalHistory.getPhoneNumber());
-                callableStatement.setString(4, clinicalHistory.getEmail());
-                callableStatement.setString(5, clinicalHistory.getPersonCode());
-                callableStatement.setString(6, clinicalHistory.getPatientType());
+                CallableStatement callableStatement = con.prepareCall("{call INEN.add_clinic_historial(?,?,?,?,?)}");
+                callableStatement.setString(1, clinicalHistory.getInsuranceCode());
+                callableStatement.setString(2, clinicalHistory.getPhoneNumber());
+                callableStatement.setString(3, clinicalHistory.getEmail());
+                callableStatement.setString(4, clinicalHistory.getPersonCode());
+                callableStatement.setString(5, clinicalHistory.getPatientType());
                 return callableStatement;
             }
         }, parameters);
