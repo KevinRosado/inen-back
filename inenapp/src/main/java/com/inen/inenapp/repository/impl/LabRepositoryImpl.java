@@ -1,6 +1,8 @@
 package com.inen.inenapp.repository.impl;
 
 import com.inen.inenapp.dto.attention.Sample;
+import com.inen.inenapp.dto.attention.SampleService;
+import com.inen.inenapp.dto.attention.Service;
 import com.inen.inenapp.repository.LabRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -8,14 +10,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class LabRepositoryImpl implements LabRepository {
@@ -59,5 +65,36 @@ public class LabRepositoryImpl implements LabRepository {
                 return callableStatement;
             }
         }, parameters);
+    }
+
+    @Override
+    public List<SampleService> getSampleServices(String orderCode) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("orderCode", Types.INTEGER),
+                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.get_sample_services(?,?)}");
+                callableStatement.setInt(1, Integer.parseInt(orderCode));
+                callableStatement.registerOutParameter(2, Types.REF_CURSOR);
+                return callableStatement;
+            }
+        }, parameters);
+        List<SampleService> sampleServices = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
+                .map(p -> {
+                    SampleService s = new SampleService();
+                    s.setOrderCode(String.valueOf(p.get("cod_orden_servicio")));
+                    s.setServiceName(String.valueOf(p.get("descripcion_servicio")));
+                    if(p.get("cod_muestra") == null){
+                        s.setSampleCode(String.valueOf(0));
+                    }
+                    else {
+                        s.setSampleCode(String.valueOf(p.get("cod_muestra")));
+                    }
+                    return s;
+                }).collect(Collectors.toList());
+        return sampleServices;
     }
 }
