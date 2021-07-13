@@ -59,8 +59,8 @@ public class LabRepositoryImpl implements LabRepository {
             @Override
             public CallableStatement createCallableStatement(Connection con) throws SQLException {
                 CallableStatement callableStatement = con.prepareCall("{call INEN.add_service_sample(?,?)}");
-                callableStatement.setInt(1, sampleCode);
-                callableStatement.setInt(2, orderCode);
+                callableStatement.setInt(1, orderCode);
+                callableStatement.setInt(2, sampleCode);
                 return callableStatement;
             }
         }, parameters);
