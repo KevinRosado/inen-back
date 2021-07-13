@@ -11,10 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -175,6 +172,62 @@ public class AttentionRepositoryImpl implements AttentionRepository {
                 callableStatement.setString(2, serviceCode);
                 callableStatement.setString(3, priceType);
                 callableStatement.setBigDecimal(4, price);
+                return callableStatement;
+            }
+        }, parameters);
+    }
+
+    @Override
+    public void addNewPerson(ClinicalHistory clinicalHistory) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("personCode", Types.VARCHAR),
+                new SqlParameter("apePat", Types.VARCHAR),
+                new SqlParameter("apeMat", Types.VARCHAR),
+                new SqlParameter("names", Types.VARCHAR),
+                new SqlParameter("birthday", Types.VARCHAR),
+                new SqlParameter("civilState", Types.VARCHAR),
+                new SqlParameter("gender", Types.VARCHAR),
+                new SqlParameter("religion", Types.VARCHAR),
+                new SqlParameter("livingPlace", Types.VARCHAR),
+                new SqlParameter("bloodType", Types.VARCHAR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                CallableStatement callableStatement = con.prepareCall("{call INEN.add_person(?,?,?,?,?,?,?,?,?,?)}");
+                callableStatement.setString(1, clinicalHistory.getPersonCode());
+                callableStatement.setString(2, clinicalHistory.getPaternalSurname());
+                callableStatement.setString(3, clinicalHistory.getMaternalSurname());
+                callableStatement.setString(4, clinicalHistory.getPatientName());
+                callableStatement.setDate(5, Date.valueOf(clinicalHistory.getBirthday()));
+                callableStatement.setString(6, clinicalHistory.getCivilState());
+                callableStatement.setString(7, clinicalHistory.getGender());
+                callableStatement.setString(8, clinicalHistory.getReligion());
+                callableStatement.setString(9, clinicalHistory.getLivingPlace());
+                callableStatement.setString(10, clinicalHistory.getBloodType());
+                return callableStatement;
+            }
+        }, parameters);
+    }
+
+    @Override
+    public void addNewHistory(ClinicalHistory clinicalHistory) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("clinicalCode", Types.VARCHAR),
+                new SqlParameter("insuranceCode", Types.VARCHAR),
+                new SqlParameter("phoneNumber", Types.VARCHAR),
+                new SqlParameter("email", Types.VARCHAR),
+                new SqlParameter("personCode", Types.VARCHAR),
+                new SqlParameter("patientType", Types.VARCHAR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                CallableStatement callableStatement = con.prepareCall("{call INEN.add_clinic_historial(?,?,?,?,?,?)}");
+                callableStatement.setString(1, clinicalHistory.getClinicalCode());
+                callableStatement.setString(2, clinicalHistory.getInsuranceCode());
+                callableStatement.setString(3, clinicalHistory.getPhoneNumber());
+                callableStatement.setString(4, clinicalHistory.getEmail());
+                callableStatement.setString(5, clinicalHistory.getPersonCode());
+                callableStatement.setString(6, clinicalHistory.getPatientType());
                 return callableStatement;
             }
         }, parameters);

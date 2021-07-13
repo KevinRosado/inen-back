@@ -13,4 +13,5 @@ public interface AttentionService {
     void addNewOrder(Order order);
     List<Attention> getLastAttentions(String clinicalCode);
     void addNewAttention(MedicalAttention medicalAttention);
+    void addNewPatient(ClinicalHistory clinicalHistory);
 }

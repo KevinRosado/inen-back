@@ -43,4 +43,11 @@ public class AttentionServiceImpl implements AttentionService {
     public void addNewAttention(MedicalAttention medicalAttention) {
         attentionRepository.addNewAttention(medicalAttention);
     }
+
+    @Override
+    @Transactional
+    public void addNewPatient(ClinicalHistory clinicalHistory) {
+        attentionRepository.addNewPerson(clinicalHistory);
+        attentionRepository.addNewHistory(clinicalHistory);
+    }
 }

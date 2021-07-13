@@ -13,4 +13,6 @@ public interface AttentionRepository {
     List<Attention> getLastAttentions(String clinicalCode);
     void addNewAttention(MedicalAttention medicalAttention);
     void addNewService(Integer orderCode, String serviceCode, String priceType, BigDecimal price);
+    void addNewPerson(ClinicalHistory clinicalHistory);
+    void addNewHistory(ClinicalHistory clinicalHistory);
 }
