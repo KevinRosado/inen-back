@@ -2,7 +2,6 @@ package com.inen.inenapp.repository.impl;
 
 import com.inen.inenapp.dto.attention.Sample;
 import com.inen.inenapp.dto.attention.SampleService;
-import com.inen.inenapp.dto.attention.Service;
 import com.inen.inenapp.repository.LabRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -12,7 +11,7 @@ import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
-import java.math.BigDecimal;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -87,12 +86,7 @@ public class LabRepositoryImpl implements LabRepository {
                     SampleService s = new SampleService();
                     s.setOrderCode(String.valueOf(p.get("cod_orden_servicio")));
                     s.setServiceName(String.valueOf(p.get("descripcion_servicio")));
-                    if(p.get("cod_muestra") == null){
-                        s.setSampleCode(String.valueOf(0));
-                    }
-                    else {
-                        s.setSampleCode(String.valueOf(p.get("cod_muestra")));
-                    }
+                    s.setSampleCode(String.valueOf(p.get("muestraCode")));
                     return s;
                 }).collect(Collectors.toList());
         return sampleServices;

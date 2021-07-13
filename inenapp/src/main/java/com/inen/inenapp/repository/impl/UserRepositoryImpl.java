@@ -77,7 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
                 user.setUserName((String)p.get("nombres"));
                 user.setCodMarcaje((String)p.get("cod_marcaje"));
                 user.setCodSistema((String)p.get("cod_sistema"));
-                user.setRol("Caja");
+                user.setRol("Laboratorio");
                 user.setJwt("jwt");
                 return user;
             }).collect(Collectors.toList());
