@@ -1,5 +1,6 @@
 package com.inen.inenapp.controller;
 
+import com.inen.inenapp.dto.attention.MachinesLab;
 import com.inen.inenapp.dto.attention.Sample;
 import com.inen.inenapp.dto.attention.SampleService;
 import com.inen.inenapp.service.LabService;
@@ -23,5 +24,9 @@ public class LabController {
     @GetMapping(value = "/sampleservices", produces = "application/json")
     public List<SampleService> getSampleServices (@RequestParam String orderCode){
         return labService.getSampleServices(orderCode);
+    }
+    @GetMapping(value = "/machinesarea", produces ="application/json")
+    public List<MachinesLab> getMachinesLab(@RequestParam String areaCode){
+        return labService.getMachinesLab(areaCode);
     }
 }

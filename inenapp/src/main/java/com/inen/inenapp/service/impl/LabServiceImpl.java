@@ -1,5 +1,6 @@
 package com.inen.inenapp.service.impl;
 
+import com.inen.inenapp.dto.attention.MachinesLab;
 import com.inen.inenapp.dto.attention.Sample;
 import com.inen.inenapp.dto.attention.SampleService;
 import com.inen.inenapp.repository.LabRepository;
@@ -29,4 +30,11 @@ public class LabServiceImpl implements LabService {
     public List<SampleService> getSampleServices(String orderCode) {
         return labRepository.getSampleServices(orderCode);
     }
+
+    @Override
+    public List<MachinesLab> getMachinesLab(String areaCode) {
+        
+        return labRepository.getMachinesLab(areaCode);
+    }
+    
 }

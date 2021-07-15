@@ -1,5 +1,6 @@
 package com.inen.inenapp.repository;
 
+import com.inen.inenapp.dto.attention.MachinesLab;
 import com.inen.inenapp.dto.attention.Sample;
 import com.inen.inenapp.dto.attention.SampleService;
 
@@ -9,4 +10,5 @@ public interface LabRepository {
     Integer addSample(Sample sample);
     void addSampleServices(Integer sampleCode, Integer orderCode);
     List<SampleService> getSampleServices (String orderCode);
+    List<MachinesLab> getMachinesLab(String areaCode);
 }

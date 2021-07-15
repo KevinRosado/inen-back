@@ -1,5 +1,6 @@
 package com.inen.inenapp.repository.impl;
 
+import com.inen.inenapp.dto.attention.MachinesLab;
 import com.inen.inenapp.dto.attention.Sample;
 import com.inen.inenapp.dto.attention.SampleService;
 import com.inen.inenapp.repository.LabRepository;
@@ -91,4 +92,31 @@ public class LabRepositoryImpl implements LabRepository {
                 }).collect(Collectors.toList());
         return sampleServices;
     }
+
+    @Override
+    public List<MachinesLab> getMachinesLab(String areaCode) {
+        
+        List<SqlParameter> parameters = Arrays.asList(
+            new SqlParameter("areaCode", Types.INTEGER),
+            new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+    Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+        @Override
+        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+            con.setAutoCommit(false);
+            CallableStatement callableStatement = con.prepareCall("{call INEN.get_machines_by_area(?,?)}");
+            callableStatement.setInt(1, Integer.parseInt(areaCode));
+            callableStatement.registerOutParameter(2, Types.REF_CURSOR);
+            return callableStatement;
+        }
+    }, parameters);
+    List<MachinesLab> machinesLab = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
+            .map(p -> {
+                MachinesLab m = new MachinesLab();
+                m.setMachineCode(String.valueOf(p.get("cod_maquina")));
+                m.setMachineModel(String.valueOf(p.get("descripcion")));
+                return m;
+            }).collect(Collectors.toList());
+    return machinesLab;
+    }
+    
 }
