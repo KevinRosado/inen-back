@@ -188,4 +188,19 @@ public class LabRepositoryImpl implements LabRepository {
         return orderCodes;
     }
 
+    @Override
+    public void updateSample(String sampleCode) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("sampleCode", Types.INTEGER));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.update_sample(?)}");
+                callableStatement.setInt(1, Integer.parseInt(sampleCode));
+                return callableStatement;
+            }
+        }, parameters);
+    }
+
 }

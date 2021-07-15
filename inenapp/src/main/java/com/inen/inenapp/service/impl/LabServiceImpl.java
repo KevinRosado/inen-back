@@ -44,12 +44,13 @@ public class LabServiceImpl implements LabService {
     @Override
     @Transactional
     public void addMachineOperation(MachineOperation machine) {
-        for (MachineWithSamples m: machine.getMachinesRelation()) {
+        for (MachineWithSamples m: machine.getMachineRelation()) {
             for (SimpleSample sample: m.getCodesArray()) {
                 List<String> orderCodes = labRepository.getSampleRelations(sample.getSampleCode());
                 for (String orderCode: orderCodes) {
                     labRepository.addMachineOperation(m.getMachineCode(), machine.getWorkerCode(), machine.getPersonCode(), sample.getSampleCode(), orderCode);
                 }
+                labRepository.updateSample(sample.getSampleCode());
             }
         }
     }

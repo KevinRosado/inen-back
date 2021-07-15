@@ -8,5 +8,5 @@ import java.util.List;
 public class MachineOperation {
     private String workerCode;
     private String personCode;
-    private List<MachineWithSamples> machinesRelation;
+    private List<MachineWithSamples> machineRelation;
 }
