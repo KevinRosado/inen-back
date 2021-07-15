@@ -1,9 +1,6 @@
 package com.inen.inenapp.service.impl;
 
-import com.inen.inenapp.dto.attention.MachinesLab;
-import com.inen.inenapp.dto.attention.Sample;
-import com.inen.inenapp.dto.attention.SampleService;
-import com.inen.inenapp.dto.attention.SimpleSample;
+import com.inen.inenapp.dto.attention.*;
 import com.inen.inenapp.repository.LabRepository;
 import com.inen.inenapp.service.LabService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +40,17 @@ public class LabServiceImpl implements LabService {
         
         return labRepository.getSamplebyOrder(orderCode);
     }
-    
+
+    @Override
+    public void addMachineOperation(MachineOperation machine) {
+        for (MachineWithSamples m: machine.getMachinesRelation()) {
+            for (SimpleSample sample: m.getCodesArray()) {
+                List<String> orderCodes = labRepository.getSampleRelations(sample.getSampleCode());
+                for (String orderCode: orderCodes) {
+                    labRepository.addMachineOperation(m.getMachineCode(), machine.getWorkerCode(), machine.getPersonCode(), sample.getSampleCode(), orderCode);
+                }
+            }
+        }
+    }
+
 }

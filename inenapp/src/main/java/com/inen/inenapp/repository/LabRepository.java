@@ -1,9 +1,6 @@
 package com.inen.inenapp.repository;
 
-import com.inen.inenapp.dto.attention.MachinesLab;
-import com.inen.inenapp.dto.attention.Sample;
-import com.inen.inenapp.dto.attention.SampleService;
-import com.inen.inenapp.dto.attention.SimpleSample;
+import com.inen.inenapp.dto.attention.*;
 
 import java.util.List;
 
@@ -13,4 +10,6 @@ public interface LabRepository {
     List<SampleService> getSampleServices (String orderCode);
     List<MachinesLab> getMachinesLab(String areaCode);
     List<SimpleSample> getSamplebyOrder (String orderCode);
+    void addMachineOperation(String machineCode, String workerCode, String personCode, String sampleCode, String orderCode);
+    List<String> getSampleRelations(String sampleCode);
 }

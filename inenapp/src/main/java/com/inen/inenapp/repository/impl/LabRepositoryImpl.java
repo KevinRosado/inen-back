@@ -1,9 +1,6 @@
 package com.inen.inenapp.repository.impl;
 
-import com.inen.inenapp.dto.attention.MachinesLab;
-import com.inen.inenapp.dto.attention.Sample;
-import com.inen.inenapp.dto.attention.SampleService;
-import com.inen.inenapp.dto.attention.SimpleSample;
+import com.inen.inenapp.dto.attention.*;
 import com.inen.inenapp.repository.LabRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -144,5 +141,51 @@ public class LabRepositoryImpl implements LabRepository {
                 }).collect(Collectors.toList());
         return sample;
     }
-    
+
+    @Override
+    public void addMachineOperation(String machineCode, String workerCode, String personCode, String sampleCode, String orderCode) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("machineCode", Types.VARCHAR),
+                new SqlParameter("workerCode", Types.VARCHAR),
+                new SqlParameter("personCode", Types.VARCHAR),
+                new SqlParameter("sampleCode", Types.INTEGER),
+                new SqlParameter("orderCode", Types.INTEGER));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                CallableStatement callableStatement = con.prepareCall("{call INEN.add_machine_operation(?,?,?,?,?)}");
+                callableStatement.setString(1, machineCode);
+                callableStatement.setString(2, workerCode);
+                callableStatement.setString(3, personCode);
+                callableStatement.setInt(4, Integer.parseInt(sampleCode));
+                callableStatement.setInt(5, Integer.parseInt(orderCode));
+                return callableStatement;
+            }
+        }, parameters);
+    }
+
+
+    @Override
+    public List<String> getSampleRelations(String sampleCode) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("sampleCode", Types.INTEGER),
+                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.get_sample_relations(?,?)}");
+                callableStatement.setInt(1, Integer.parseInt(sampleCode));
+                callableStatement.registerOutParameter(2, Types.REF_CURSOR);
+                return callableStatement;
+            }
+        }, parameters);
+        List<String> orderCodes = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
+                .map(p -> {
+                    String s = String.valueOf(p.get("cod_orden_servicio"));
+                    return s;
+                }).collect(Collectors.toList());
+        return orderCodes;
+    }
+
 }
