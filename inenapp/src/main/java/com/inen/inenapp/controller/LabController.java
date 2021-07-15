@@ -3,6 +3,7 @@ package com.inen.inenapp.controller;
 import com.inen.inenapp.dto.attention.MachinesLab;
 import com.inen.inenapp.dto.attention.Sample;
 import com.inen.inenapp.dto.attention.SampleService;
+import com.inen.inenapp.dto.attention.SimpleSample;
 import com.inen.inenapp.service.LabService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,4 +30,9 @@ public class LabController {
     public List<MachinesLab> getMachinesLab(@RequestParam String areaCode){
         return labService.getMachinesLab(areaCode);
     }
+    @GetMapping(value = "/samplesorder", produces ="application/json")
+    public List<SimpleSample> getSamplebyOrder(@RequestParam String orderCode){
+        return labService.getSamplebyOrder(orderCode);
+    }
 }
+

@@ -3,6 +3,7 @@ package com.inen.inenapp.service.impl;
 import com.inen.inenapp.dto.attention.MachinesLab;
 import com.inen.inenapp.dto.attention.Sample;
 import com.inen.inenapp.dto.attention.SampleService;
+import com.inen.inenapp.dto.attention.SimpleSample;
 import com.inen.inenapp.repository.LabRepository;
 import com.inen.inenapp.service.LabService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class LabServiceImpl implements LabService {
     public List<MachinesLab> getMachinesLab(String areaCode) {
         
         return labRepository.getMachinesLab(areaCode);
+    }
+
+    @Override
+    public List<SimpleSample> getSamplebyOrder(String orderCode) {
+        
+        return labRepository.getSamplebyOrder(orderCode);
     }
     
 }
