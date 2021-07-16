@@ -239,13 +239,29 @@ public class LabRepositoryImpl implements LabRepository {
                 .map(p -> {
                     MachineData m = new MachineData();
                     m.setCodAnalisisMaquina(String.valueOf(p.get("cod_analisis_maquina")));
-                    m.setMaxRef(String.valueOf((String)p.get("max_referencial")));
+                    m.setMaxRef(String.valueOf(p.get("max_referencial")));
                     m.setResultado(String.valueOf(p.get("resultado")));
-                    m.setMinRef(String.valueOf((String)p.get("min_referencial")));
-
+                    m.setMinRef(String.valueOf(p.get("min_referencial")));
                     return m;
                 }).collect(Collectors.toList());
         return operations;
+    }
+
+    @Override
+    public void addResult(MachineData result) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("score", Types.VARCHAR),
+                new SqlParameter("machineCode", Types.VARCHAR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.add_results(?,?)}");
+                callableStatement.setString(1, result.getResultado());
+                callableStatement.setString(2, result.getCodAnalisisMaquina());
+                return callableStatement;
+            }
+        }, parameters);
     }
 
 }

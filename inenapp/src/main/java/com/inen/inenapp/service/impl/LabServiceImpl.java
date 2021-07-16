@@ -76,4 +76,13 @@ public class LabServiceImpl implements LabService {
         return lista;
     }
 
+    @Override
+    @Transactional
+    public void addResults(MachineSimulation results) {
+        for (MachineData r: results.getMachineData()) {
+            labRepository.addResult(r);
+        }
+        labRepository.updateMachine(results.getMachinesLab());
+    }
+
 }

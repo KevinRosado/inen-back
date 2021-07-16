@@ -36,14 +36,21 @@ public class LabController {
     public void addMachineOperation(@RequestBody MachineOperation machine){
         labService.addMachineOperation(machine);
     }
+
     @PostMapping(value = "/updatemachine",consumes = "application/json")
     public void updateMachine(@RequestBody MachinesLab machineCode){
         labService.updateMachine(machineCode);
     }
 
-    @GetMapping(value="/simulationinfo",produces = "application/json")
+    @GetMapping(value="/simulationinfo", produces = "application/json")
     public List<MachineSimulation> setSimulation(@RequestParam String areaCode){
         return labService.setSimulation(areaCode);
     }
+
+    @PostMapping(value = "/addresults", consumes = "application/json")
+    public void addResults(@RequestBody MachineSimulation results){
+        labService.addResults(results);
+    }
+
 }
 

@@ -15,4 +15,5 @@ public interface LabService {
     void addMachineOperation(MachineOperation machine);
     void updateMachine(MachinesLab machineCode);
     List<MachineSimulation> setSimulation(String areaCode);
+    void addResults(MachineSimulation results);
 }
