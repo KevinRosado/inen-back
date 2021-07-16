@@ -211,7 +211,6 @@ public class LabRepositoryImpl implements LabRepository {
     Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
         @Override
         public CallableStatement createCallableStatement(Connection con) throws SQLException {
-            con.setAutoCommit(false);
             CallableStatement callableStatement = con.prepareCall("{call INEN.update_machine(?)}");
             callableStatement.setString(1, machineCode.getMachineCode());
             return callableStatement;
@@ -251,14 +250,13 @@ public class LabRepositoryImpl implements LabRepository {
     public void addResult(MachineData result) {
         List<SqlParameter> parameters = Arrays.asList(
                 new SqlParameter("score", Types.VARCHAR),
-                new SqlParameter("machineCode", Types.VARCHAR));
+                new SqlParameter("machineCode", Types.INTEGER));
         Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
             @Override
             public CallableStatement createCallableStatement(Connection con) throws SQLException {
-                con.setAutoCommit(false);
                 CallableStatement callableStatement = con.prepareCall("{call INEN.add_results(?,?)}");
                 callableStatement.setString(1, result.getResultado());
-                callableStatement.setString(2, result.getCodAnalisisMaquina());
+                callableStatement.setInt(2, Integer.parseInt(result.getCodAnalisisMaquina()));
                 return callableStatement;
             }
         }, parameters);
