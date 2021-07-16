@@ -40,8 +40,8 @@ public class LabController {
     public void updateMachine(@RequestBody MachinesLab machineCode){
         labService.updateMachine(machineCode);
     }
-    
-    @GetMapping(value="/simulationinfo",consumes = "application/json")
+
+    @GetMapping(value="/simulationinfo",produces = "application/json")
     public List<MachineSimulation> setSimulation(@RequestParam String areaCode){
         return labService.setSimulation(areaCode);
     }
