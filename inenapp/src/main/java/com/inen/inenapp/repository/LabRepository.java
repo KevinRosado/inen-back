@@ -14,4 +14,5 @@ public interface LabRepository {
     List<String> getSampleRelations(String sampleCode);
     void updateSample(String sampleCode);
     void updateMachine(MachinesLab machineCode);
+    List<MachineData> getMachineOperations(String machineCode);
 }

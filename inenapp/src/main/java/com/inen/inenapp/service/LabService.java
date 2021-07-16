@@ -14,4 +14,5 @@ public interface LabService {
     List<SimpleSample> getSamplebyOrder(String orderCode);
     void addMachineOperation(MachineOperation machine);
     void updateMachine(MachinesLab machineCode);
+    List<MachineSimulation> setSimulation(String areaCode);
 }

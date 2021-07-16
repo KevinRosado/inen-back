@@ -40,5 +40,9 @@ public class LabController {
     public void updateMachine(@RequestBody MachinesLab machineCode){
         labService.updateMachine(machineCode);
     }
+    @PostMapping(value="/simulationinfo",consumes = "application/json")
+    public List<MachineSimulation> setSimulation(String areaCode){
+        return labService.setSimulation(areaCode);
+    }
 }
 

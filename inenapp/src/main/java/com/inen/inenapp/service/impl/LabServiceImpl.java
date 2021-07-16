@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,6 +59,21 @@ public class LabServiceImpl implements LabService {
     @Override
     public void updateMachine(MachinesLab machineCode) {
         labRepository.updateMachine(machineCode);
+    }
+
+    @Override
+    @Transactional
+    public List<MachineSimulation> setSimulation(String areaCode) {
+        List<MachineSimulation> lista = new ArrayList<MachineSimulation>();
+        List<MachinesLab> machines = labRepository.getMachinesLab(areaCode);
+        for (MachinesLab  i : machines) {
+            MachineSimulation machineSimul = new MachineSimulation();
+            machineSimul.setMachinesLab(i);
+           List<MachineData> data = labRepository.getMachineOperations(i.getMachineCode());
+            machineSimul.setMachineData(data);
+            lista.add(machineSimul);
+        }
+        return lista;
     }
 
 }

@@ -220,4 +220,32 @@ public class LabRepositoryImpl implements LabRepository {
         
     }
 
+    @Override
+    public List<MachineData> getMachineOperations(String machineCode) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter("machineCode", Types.VARCHAR),
+                new SqlOutParameter("p_cursor", Types.REF_CURSOR));
+        Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+                con.setAutoCommit(false);
+                CallableStatement callableStatement = con.prepareCall("{call INEN.get_machine_operations(?,?)}");
+                callableStatement.setString(1, machineCode);
+                callableStatement.registerOutParameter(2, Types.REF_CURSOR);
+                return callableStatement;
+            }
+        }, parameters);
+        List<MachineData> operations = ((ArrayList<LinkedCaseInsensitiveMap>) t.get("p_cursor")).stream()
+                .map(p -> {
+                    MachineData m = new MachineData();
+                    m.setCodAnalisisMaquina(String.valueOf(p.get("cod_analisis_maquina")));
+                    m.setMaxRef(String.valueOf((String)p.get("max_referencial")));
+                    m.setResultado(String.valueOf(p.get("resultado")));
+                    m.setMinRef(String.valueOf((String)p.get("min_referencial")));
+
+                    return m;
+                }).collect(Collectors.toList());
+        return operations;
+    }
+
 }
