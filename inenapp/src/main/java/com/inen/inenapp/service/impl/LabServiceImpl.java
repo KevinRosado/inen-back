@@ -55,4 +55,9 @@ public class LabServiceImpl implements LabService {
         }
     }
 
+    @Override
+    public void updateMachine(MachinesLab machineCode) {
+        labRepository.updateMachine(machineCode);
+    }
+
 }

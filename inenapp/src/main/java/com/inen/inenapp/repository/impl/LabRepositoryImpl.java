@@ -112,6 +112,7 @@ public class LabRepositoryImpl implements LabRepository {
                 MachinesLab m = new MachinesLab();
                 m.setMachineCode(String.valueOf(p.get("cod_maquina")));
                 m.setMachineModel(String.valueOf(p.get("descripcion")));
+                m.setDisponibility(Boolean.valueOf((boolean) p.get("en_actividad")));
                 return m;
             }).collect(Collectors.toList());
     return machinesLab;
@@ -201,6 +202,22 @@ public class LabRepositoryImpl implements LabRepository {
                 return callableStatement;
             }
         }, parameters);
+    }
+
+    @Override
+    public void updateMachine(MachinesLab machineCode) {
+        List<SqlParameter> parameters = Arrays.asList(
+            new SqlParameter("machineCode", Types.VARCHAR));
+    Map<String, Object> t = jdbcTemplate.call(new CallableStatementCreator(){
+        @Override
+        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+            con.setAutoCommit(false);
+            CallableStatement callableStatement = con.prepareCall("{call INEN.update_machine(?)}");
+            callableStatement.setString(1, machineCode.getMachineCode());
+            return callableStatement;
+        }
+    }, parameters);
+        
     }
 
 }

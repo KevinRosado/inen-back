@@ -36,5 +36,9 @@ public class LabController {
     public void addMachineOperation(@RequestBody MachineOperation machine){
         labService.addMachineOperation(machine);
     }
+    @PostMapping(value = "/updatemachine",consumes = "application/json")
+    public void updateMachine(@RequestBody MachinesLab machineCode){
+        labService.updateMachine(machineCode);
+    }
 }
 

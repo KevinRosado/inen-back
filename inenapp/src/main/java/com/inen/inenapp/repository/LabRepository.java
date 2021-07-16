@@ -13,4 +13,5 @@ public interface LabRepository {
     void addMachineOperation(String machineCode, String workerCode, String personCode, String sampleCode, String orderCode);
     List<String> getSampleRelations(String sampleCode);
     void updateSample(String sampleCode);
+    void updateMachine(MachinesLab machineCode);
 }
